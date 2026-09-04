@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 module pattern_lfsr (
     input  logic       clk,
     input  logic       rst_n,
