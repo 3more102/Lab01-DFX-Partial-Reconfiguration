@@ -17,12 +17,13 @@ This package implements the intent of **Lab 1 — DFX: Runtime Module Swap on ZC
 3. **Behavioral RM switching**: the lab testbench instantiates RM-A only. This package instantiates both RMs and uses a simulation-only selector to model which RM is resident. This is not a replacement for physical DFX; it verifies reset/decouple sequencing and static continuity before hardware.
 4. **`pr_verify`**: AMD UG909 specifies comparison of routed configurations. `verify_and_write_bitstreams.tcl` compares Config A and Config B explicitly before generating bitstreams.
 5. **Static preservation for Config B**: AMD's DFX sequence removes the first RM with `update_design -cell ... -black_box`, locks static routing, saves a static checkpoint, then inserts the second RM. `dfx_config_b_from_a.tcl` follows that sequence.
-6. **XilFPGA API**: the supplied lab uses `XFpga_PartialBtcnfg()`. The maintained Xilinx embeddedsw example uses `XFpga_BitStream_Load(..., XFPGA_PARTIAL_EN)` for non-Versal partial loading; `vitis/main.c` follows that public API.
-7. **Partial bitstream naming**: directional names in the lab are easy to misread. This package names images by the RM they contain: `partial_chaser.bit` and `partial_lfsr.bit`.
-8. **Divider timing note**: with a 100 MHz clock, the shown `div[21]` condition is reached after about 2,097,152 cycles (~20.97 ms), not ~4.2 ms. The RTL expression is preserved; only the interpretation is corrected here.
+6. **Forward compatibility**: AMD UG909 2026.1 keeps the established DFX Tcl flow and documents migration of existing DFX scripts forward. This repository is therefore targeted at Vivado 2026.x while retaining the same core DFX Tcl sequence.
+7. **XilFPGA API**: the supplied lab uses `XFpga_PartialBtcnfg()`. The maintained Xilinx embeddedsw example uses `XFpga_BitStream_Load(..., XFPGA_PARTIAL_EN)` for non-Versal partial loading; `vitis/main.c` follows that public API. Rebuild it against the software platform/BSP shipped with the installed 2026.x tools.
+8. **Partial bitstream naming**: directional names in the lab are easy to misread. This package names images by the RM they contain: `partial_chaser.bit` and `partial_lfsr.bit`.
+9. **Divider timing note**: with a 100 MHz clock, the shown `div[21]` condition is reached after about 2,097,152 cycles (~20.97 ms), not ~4.2 ms. The RTL expression is preserved; only the interpretation is corrected here.
 
 ## What cannot be truthfully pre-generated here
-- A valid `sys.bd`, implemented DCP, full `.bit`, or partial `.bit` requires Vivado 2023.2 with the ZCU102 board files/IP and the DFX feature available.
+- A valid `sys.bd`, implemented DCP, full `.bit`, or partial `.bit` requires the user's installed Vivado 2026.x environment with the ZCU102 board files/IP and DFX capability available.
 - Hardware proof requires a physical ZCU102, JTAG/UART connections, and a running A53 application.
 
 The repository therefore treats hardware-generated files and pass/fail evidence as outputs to be produced on the target toolchain, not as pre-filled claims.
