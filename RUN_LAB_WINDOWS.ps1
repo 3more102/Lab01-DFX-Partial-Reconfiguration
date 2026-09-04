@@ -7,12 +7,15 @@ Write-Host "=== Lab01 DFX / ZCU102 ===" -ForegroundColor Cyan
 $vivado = Get-Command vivado.bat -ErrorAction SilentlyContinue
 if (-not $vivado) { $vivado = Get-Command vivado -ErrorAction SilentlyContinue }
 if (-not $vivado) {
-    Write-Host "Vivado is not on PATH. Open 'Vivado 2023.2 Tcl Shell' and run:" -ForegroundColor Yellow
+    Write-Host "Vivado is not on PATH. Open your Vivado 2026.x Tcl Shell and run:" -ForegroundColor Yellow
     Write-Host "  cd `"$Root`""
     Write-Host "  vivado -mode batch -source tcl/run_behavioral_sim.tcl"
     Write-Host "  vivado -mode batch -source tcl/create_project_skeleton.tcl"
     exit 1
 }
+
+Write-Host "Detected Vivado:" -ForegroundColor Cyan
+& $vivado.Source -version | Select-Object -First 1
 
 Write-Host "[1/2] Running behavioral simulation..." -ForegroundColor Green
 & $vivado.Source -mode batch -source "$Root\tcl\run_behavioral_sim.tcl"
