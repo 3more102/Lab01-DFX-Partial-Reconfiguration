@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 module dfx_boundary_model (
     input  logic [7:0] rm_led,
     input  logic       decouple,
