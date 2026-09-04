@@ -24,7 +24,7 @@ tb/                Behavioral DFX sequencing testbench
 constr/             ZCU102 LED constraints
 tcl/                Vivado simulation, OOC RM, DFX and bitstream scripts
 vitis/              A53 XilFPGA/PCAP partial loader
-docs/               Implementation notes, traceability, verification checklist
+docs/               Notes, conceptual answers, remaining hardware work, verification
 sim/                Generated simulation outputs (ignored)
 build/              Generated Vivado/DFX outputs (ignored)
 ```
@@ -53,6 +53,18 @@ Expected final marker:
 ```text
 [TB] Behavioral Verification Passed!
 ```
+
+### Verified CI result
+GitHub Actions `RTL CI` run #1 completed successfully. The observed markers were:
+
+```text
+[TB] RM-A active. LED=01 HB=14
+[TB] RM-B active. LED=ac HB=180
+[TB] Reconfig complete. LED=01 HB=214
+[TB] Behavioral Verification Passed!
+```
+
+This proves the repository's behavioral model compiles and the modeled A -> B -> A sequence, boundary decoupling assertions, and heartbeat continuity pass. It does **not** replace Vivado DFX or ZCU102 hardware verification.
 
 ## 2. Create the Vivado source project
 ```bash
@@ -149,26 +161,23 @@ RM reset -> decouple -> partial load -> RM reset release -> recouple
 
 The app records partial-load time and heartbeat delta.
 
-## Verification evidence to capture
-Use `docs/verification_checklist.md` and record real values for:
-- Behavioral simulation PASS.
-- Config A / Config B routed successfully.
-- `pr_verify` PASS.
-- Exact full and partial image sizes.
-- JTAG swaps in both directions.
-- Zero UART heartbeat pauses.
-- Monotonic `hb_count` across every swap.
-- Decoupled output = `0x00`.
-- PCAP result = `XFPGA_SUCCESS` for repeated loads.
-- Min / max / mean PCAP load time.
-
-## Accuracy notes
-`docs/implementation_notes.md` lists the small executable corrections made relative to the supplied PDF, including the static-lock sequence, `pr_verify` usage, XilFPGA API choice, simulation initialization, and the divider timing interpretation.
+## Lab completion documents
+- `docs/verification_checklist.md` — actual evidence and remaining TBD items.
+- `docs/conceptual_questions.md` — answers to the four questions at the end of the lab.
+- `docs/remaining_hardware_steps.md` — exact sequence still requiring Vivado/Vitis/ZCU102.
+- `docs/implementation_notes.md` — executable corrections and implementation notes.
+- `docs/source_traceability.md` — mapping back to the supplied lab.
 
 ## Current validation status
-- Source/package integrity: **checked**
-- Local RTL simulation in this environment: **not executed** (no simulator available here)
-- Vivado DFX implementation: **requires Vivado 2023.2 + board/IP/license**
-- ZCU102 hardware proof: **requires physical ZCU102**
+- Source/package integrity: **PASS**
+- GitHub Actions SystemVerilog compilation: **PASS**
+- Behavioral A -> B -> A DFX model: **PASS**
+- Behavioral decoupler assertions: **PASS**
+- Behavioral static heartbeat continuity: **PASS**
+- Conceptual questions: **completed**
+- Vivado Config A / Config B routed implementation: **TBD — Vivado 2023.2 required**
+- `pr_verify` and bitstream generation: **TBD — Vivado 2023.2 required**
+- JTAG runtime swap: **TBD — physical ZCU102 required**
+- PCAP runtime swap/timing: **TBD — Vitis + physical ZCU102 required**
 
-No bitstream or hardware PASS result is claimed until it is produced on the required toolchain and board.
+No Vivado bitstream, JTAG, or PCAP hardware PASS result is claimed until it is produced on the required toolchain and board.
