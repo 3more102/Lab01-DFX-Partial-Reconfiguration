@@ -13,8 +13,10 @@ The static region contains the PS-facing AXI GPIO and a free-running 32-bit hear
 ## Target
 - Board: **AMD/Xilinx ZCU102**
 - Device: **XCZU9EG-2FFVB1156E**
-- Lab toolchain: **Vivado / Vitis 2023.2**
+- Toolchain: **Vivado 2026.x** (DFX flow checked against AMD UG909 2026.1)
 - Fabric clock: **100 MHz FCLK0**
+
+AMD UG909 2026.1 keeps the established DFX flow: synthesize static/RMs, define RP pblocks, implement an initial full configuration, remove the RM, lock static placement/routing, implement alternate RMs, run `pr_verify`, and generate compatible full/partial bitstreams. Existing DFX Tcl flows are documented as forward-migratable.
 
 ## Repository layout
 ```text
@@ -31,7 +33,7 @@ build/              Generated Vivado/DFX outputs (ignored)
 
 ## 1. Behavioral verification
 ### Vivado XSIM
-From a Vivado 2023.2 shell:
+From a Vivado 2026.x shell:
 ```bash
 vivado -mode batch -source tcl/run_behavioral_sim.tcl
 ```
@@ -55,7 +57,7 @@ Expected final marker:
 ```
 
 ### Verified CI result
-GitHub Actions `RTL CI` run #1 completed successfully. The observed markers were:
+GitHub Actions `RTL CI` completed successfully. Observed markers include:
 
 ```text
 [TB] RM-A active. LED=01 HB=14
@@ -67,6 +69,12 @@ GitHub Actions `RTL CI` run #1 completed successfully. The observed markers were
 This proves the repository's behavioral model compiles and the modeled A -> B -> A sequence, boundary decoupling assertions, and heartbeat continuity pass. It does **not** replace Vivado DFX or ZCU102 hardware verification.
 
 ## 2. Create the Vivado source project
+On Windows you can use:
+```powershell
+.\RUN_LAB_WINDOWS.ps1
+```
+
+Or directly:
 ```bash
 vivado -mode batch -source tcl/create_project_skeleton.tcl
 ```
@@ -152,7 +160,7 @@ build/bitstreams/pr_verify.log
 7. Record `hb_count` before/after each swap.
 
 ## 9. PCAP partial load from Cortex-A53
-Use `vitis/main.c`. Put the matching partial image in DDR at `0x10000000`, replace `PARTIAL_SIZE_BYTES` with the exact image size, and run the application.
+Use `vitis/main.c` and rebuild it against the 2026.x software platform/BSP that matches your installed tools. Put the matching partial image in DDR at `0x10000000`, replace `PARTIAL_SIZE_BYTES` with the exact image size, and run the application.
 
 Runtime handshake:
 ```text
@@ -175,9 +183,9 @@ The app records partial-load time and heartbeat delta.
 - Behavioral decoupler assertions: **PASS**
 - Behavioral static heartbeat continuity: **PASS**
 - Conceptual questions: **completed**
-- Vivado Config A / Config B routed implementation: **TBD — Vivado 2023.2 required**
-- `pr_verify` and bitstream generation: **TBD — Vivado 2023.2 required**
+- Vivado 2026.x Config A / Config B routed implementation: **TBD — execute on user's Vivado installation**
+- `pr_verify` and bitstream generation: **TBD — execute on user's Vivado installation**
 - JTAG runtime swap: **TBD — physical ZCU102 required**
-- PCAP runtime swap/timing: **TBD — Vitis + physical ZCU102 required**
+- PCAP runtime swap/timing: **TBD — matching 2026.x software platform + physical ZCU102 required**
 
 No Vivado bitstream, JTAG, or PCAP hardware PASS result is claimed until it is produced on the required toolchain and board.
