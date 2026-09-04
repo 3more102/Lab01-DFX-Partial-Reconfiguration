@@ -1,6 +1,6 @@
 # Remaining Lab Work — Vivado / ZCU102 Only
 
-Everything in this file requires the AMD Vivado/Vitis 2023.2 toolchain and/or a physical ZCU102. These items are intentionally not marked PASS until real evidence is produced.
+Everything in this file requires the AMD Vivado/Vitis 2026.x toolchain and/or a physical ZCU102. The DFX flow has been checked against AMD UG909 2026.1. These items are intentionally not marked PASS until real evidence is produced.
 
 ## Completed without the board
 
@@ -90,7 +90,7 @@ Capture Hardware Manager and UART evidence.
 
 ## 8. PCAP runtime swap from Cortex-A53
 
-Convert the matching partial image to the required binary form, place it in DDR at the address used by `vitis/main.c`, update `PARTIAL_SIZE_BYTES` to the exact generated size, and run the application.
+Convert the matching partial image to the required binary form, place it in DDR at the address used by `vitis/main.c`, update `PARTIAL_SIZE_BYTES` to the exact generated size, and run the application using the matching 2026.x software platform/BSP.
 
 Required handshake:
 
