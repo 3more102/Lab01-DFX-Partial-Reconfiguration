@@ -1,0 +1,32 @@
+name: RTL CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  behavioral-simulation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y iverilog
+
+      - name: Compile SystemVerilog
+        run: |
+          mkdir -p sim/iverilog
+          iverilog -g2012 -Wall \
+            -o sim/iverilog/tb_dfx_behavior.vvp \
+            rtl/heartbeat_ctr.sv \
+            rtl/pattern_chaser.sv \
+            rtl/pattern_lfsr.sv \
+            rtl/dfx_boundary_model.sv \
+            tb/tb_dfx_behavior.sv
+
+      - name: Run behavioral testbench
+        run: vvp sim/iverilog/tb_dfx_behavior.vvp | tee sim/iverilog/test.log
+
+      - name: Require PASS marker
+        run: grep -F "[TB] Behavioral Verification Passed!" sim/iverilog/test.log

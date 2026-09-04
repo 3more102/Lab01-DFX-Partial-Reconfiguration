@@ -1,0 +1,4 @@
+# Example from the supplied lab. Verify the exact command behavior in your
+# installed Bootgen/Vitis 2023.2 environment before using it in a release flow.
+bootgen -image partial_lfsr.bit -arch zynqmp -o partial_lfsr.bin -w -process_bitstream bin
+bootgen -image partial_chaser.bit -arch zynqmp -o partial_chaser.bin -w -process_bitstream bin

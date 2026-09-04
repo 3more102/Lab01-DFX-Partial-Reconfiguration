@@ -1,0 +1,19 @@
+# Vivado / XSIM generated files
+.Xil/
+*.jou
+*.log
+*.str
+*.pb
+*.wdb
+*.vcd
+*.xpr.user
+
+# Generated project / implementation / simulation outputs
+vivado/
+build/
+sim/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
